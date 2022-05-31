@@ -11,6 +11,9 @@ categories = [ "embedded", "hardware-support" ]
 keywords = [ "temperature", "humidity", "sensor", "dht11", "dht22" ]
 edition = "2021"
 
+[package.metadata.docs.rs]
+all-features = true
+
 [features]
 default = []
 std = []
