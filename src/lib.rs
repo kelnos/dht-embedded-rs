@@ -167,7 +167,7 @@ impl<HE, ID: InterruptControl, D: DelayUs, P: InputPin<Error = HE> + OutputPin<E
             & 0xff) as u8;
         if buf[4] == checksum {
             let (humidity, temperature) = parse_data(&buf);
-            if (0.0..=100.0).contains(&humidity) {
+            if !(0.0..=100.0).contains(&humidity) {
                 Err(DhtError::InvalidData)
             } else {
                 Ok(Reading {
