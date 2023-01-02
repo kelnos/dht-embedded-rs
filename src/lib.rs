@@ -3,11 +3,8 @@
 
 use core::fmt;
 use embedded_hal::{
-    delay::blocking::DelayUs,
-    digital::{
-        blocking::{InputPin, OutputPin},
-        PinState,
-    },
+    delay::DelayUs,
+    digital::{InputPin, OutputPin, PinState},
 };
 
 /// A sensor reading
