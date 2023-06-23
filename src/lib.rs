@@ -37,8 +37,6 @@ pub enum DhtError<HE> {
     InvalidData,
     /// The read timed out
     Timeout,
-    /// Received a low-level error from the HAL while sleeping
-    DelayError,
     /// Received a low-level error from the HAL while reading or writing to pins
     PinError(HE),
 }
@@ -61,7 +59,6 @@ impl<HE: fmt::Debug> fmt::Display for DhtError<HE> {
             ),
             InvalidData => f.write_str("Received data is out of range"),
             Timeout => f.write_str("Timed out waiting for a read"),
-            DelayError => f.write_str("Failed to sleep"),
             PinError(err) => write!(f, "HAL pin error: {:?}", err),
         }
     }
@@ -131,13 +128,11 @@ impl<HE, ID: InterruptControl, D: DelayUs, P: InputPin<Error = HE> + OutputPin<E
 
         // Wake up the sensor
         self.pin.set_low()?;
-        self.delay
-            .delay_us(3000)
-            .map_err(|_| DhtError::DelayError)?;
+        self.delay.delay_us(3000);
 
         // Ask for data
         self.pin.set_high()?;
-        self.delay.delay_us(25).map_err(|_| DhtError::DelayError)?;
+        self.delay.delay_us(25);
 
         // Wait for DHT to signal data is ready (~80us low followed by ~80us high)
         self.wait_for_level(PinState::High, 85, DhtError::NotPresent)?;
@@ -192,9 +187,7 @@ impl<HE, ID: InterruptControl, D: DelayUs, P: InputPin<Error = HE> + OutputPin<E
             if tester()? {
                 return Ok(elapsed);
             }
-            if self.delay.delay_us(1).is_err() {
-                return Err(DhtError::DelayError);
-            }
+            self.delay.delay_us(1);
         }
         Err(on_timeout)
     }
