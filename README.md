@@ -51,6 +51,9 @@ fn main() -> anyhow::Result<()> {
 }
 ```
 
+Note that, if your hardware supports it, you should set the GPIO pin to
+"open drain" mode.
+
 (To be fair, the Linux kernel includes a driver for DHT sensors, and
 honestly it's probably better to use that driver, since kernel space can
 disable interrupts and get much more precise timing than we can.)
