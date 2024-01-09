@@ -14,17 +14,13 @@ Add the following to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-dht-embedded = "=0.1.0-alpha.1"
+dht-embedded = "0.4"
 ```
 
-Note that this crate currently tracks the 1.0.0 release candidates of
-`embedded-hal`, so things can change & break (though since they're in
-the RC phase, hopefully they won't), and your platform's `embedded-hal`
-implementation may not have trait implementations for the 1.0.0 release
-candidates at all, let alone the current one this crate supports.
+This crate depends on the stabilized 1.x series of `embedded-hal`.
 
 You will need to use an `embedded-hal` implementation for your hardware.
-Here's a simple one using `linux-embedded-hal` and `gpio-cdev, which
+Here's a simple one using `linux-embedded-hal` and `gpio-cdev`, which
 could be used on a Rasperry Pi.
 
 ```rust,no_run,ignore

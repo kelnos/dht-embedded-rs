@@ -1,6 +1,6 @@
 [package]
 name = "dht-embedded"
-version = "0.3.1-alpha.1"
+version = "0.4.0-alpha.1"
 description = "Library for reading temperature and humidity from the DHT11 and DHT22 sensors"
 license = "MIT OR Apache-2.0"
 authors = ["Brian J. Tarricone <brian@tarricone.org>"]
@@ -19,7 +19,7 @@ default = []
 std = []
 
 [dependencies]
-embedded-hal = "=1.0.0-rc.1"
+embedded-hal = "1"
 
 [dev-dependencies]
 anyhow = "1"

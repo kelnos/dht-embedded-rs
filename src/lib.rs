@@ -3,7 +3,7 @@
 
 use core::fmt;
 use embedded_hal::{
-    delay::DelayUs,
+    delay::DelayNs,
     digital::{InputPin, OutputPin, PinState},
 };
 
@@ -94,7 +94,7 @@ pub trait DhtSensor<HE> {
 pub struct Dht<
     HE,
     ID: InterruptControl,
-    D: DelayUs,
+    D: DelayNs,
     P: InputPin<Error = HE> + OutputPin<Error = HE>,
 > {
     interrupt_disabler: ID,
@@ -102,7 +102,7 @@ pub struct Dht<
     pin: P,
 }
 
-impl<HE, ID: InterruptControl, D: DelayUs, P: InputPin<Error = HE> + OutputPin<Error = HE>>
+impl<HE, ID: InterruptControl, D: DelayNs, P: InputPin<Error = HE> + OutputPin<Error = HE>>
     Dht<HE, ID, D, P>
 {
     fn new(interrupt_disabler: ID, delay: D, pin: P) -> Self {
@@ -178,13 +178,13 @@ impl<HE, ID: InterruptControl, D: DelayUs, P: InputPin<Error = HE> + OutputPin<E
         timeout_us: u32,
         on_timeout: DhtError<HE>,
     ) -> Result<u32, DhtError<HE>> {
-        let tester = || match level {
-            PinState::High => self.pin.is_high(),
-            PinState::Low => self.pin.is_low(),
-        };
-
         for elapsed in 0..=timeout_us {
-            if tester()? {
+            let is_ready = match level {
+                PinState::High => self.pin.is_high(),
+                PinState::Low => self.pin.is_low(),
+            }?;
+
+            if is_ready {
                 return Ok(elapsed);
             }
             self.delay.delay_us(1);
@@ -197,13 +197,13 @@ impl<HE, ID: InterruptControl, D: DelayUs, P: InputPin<Error = HE> + OutputPin<E
 pub struct Dht11<
     HE,
     ID: InterruptControl,
-    D: DelayUs,
+    D: DelayNs,
     P: InputPin<Error = HE> + OutputPin<Error = HE>,
 > {
     dht: Dht<HE, ID, D, P>,
 }
 
-impl<HE, ID: InterruptControl, D: DelayUs, P: InputPin<Error = HE> + OutputPin<Error = HE>>
+impl<HE, ID: InterruptControl, D: DelayNs, P: InputPin<Error = HE> + OutputPin<Error = HE>>
     Dht11<HE, ID, D, P>
 {
     pub fn new(interrupt_disabler: ID, delay: D, pin: P) -> Self {
@@ -217,7 +217,7 @@ impl<HE, ID: InterruptControl, D: DelayUs, P: InputPin<Error = HE> + OutputPin<E
     }
 }
 
-impl<HE, ID: InterruptControl, D: DelayUs, P: InputPin<Error = HE> + OutputPin<Error = HE>>
+impl<HE, ID: InterruptControl, D: DelayNs, P: InputPin<Error = HE> + OutputPin<Error = HE>>
     DhtSensor<HE> for Dht11<HE, ID, D, P>
 {
     fn read(&mut self) -> Result<Reading, DhtError<HE>> {
@@ -229,13 +229,13 @@ impl<HE, ID: InterruptControl, D: DelayUs, P: InputPin<Error = HE> + OutputPin<E
 pub struct Dht22<
     HE,
     ID: InterruptControl,
-    D: DelayUs,
+    D: DelayNs,
     P: InputPin<Error = HE> + OutputPin<Error = HE>,
 > {
     dht: Dht<HE, ID, D, P>,
 }
 
-impl<HE, ID: InterruptControl, D: DelayUs, P: InputPin<Error = HE> + OutputPin<Error = HE>>
+impl<HE, ID: InterruptControl, D: DelayNs, P: InputPin<Error = HE> + OutputPin<Error = HE>>
     Dht22<HE, ID, D, P>
 {
     pub fn new(interrupt_disabler: ID, delay: D, pin: P) -> Self {
@@ -254,7 +254,7 @@ impl<HE, ID: InterruptControl, D: DelayUs, P: InputPin<Error = HE> + OutputPin<E
     }
 }
 
-impl<HE, ID: InterruptControl, D: DelayUs, P: InputPin<Error = HE> + OutputPin<Error = HE>>
+impl<HE, ID: InterruptControl, D: DelayNs, P: InputPin<Error = HE> + OutputPin<Error = HE>>
     DhtSensor<HE> for Dht22<HE, ID, D, P>
 {
     fn read(&mut self) -> Result<Reading, DhtError<HE>> {
