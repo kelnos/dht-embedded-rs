@@ -1,6 +1,6 @@
 [package]
 name = "dht-embedded"
-version = "0.4.0"
+version = "0.4.1-alpha.1"
 description = "Library for reading temperature and humidity from the DHT11 and DHT22 sensors"
 license = "MIT OR Apache-2.0"
 authors = ["Brian J. Tarricone <brian@tarricone.org>"]
